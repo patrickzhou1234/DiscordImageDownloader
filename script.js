@@ -11,10 +11,31 @@ async function downloadImage(imageSrc) {
     document.body.removeChild(link);
 }
 
-var ls = document.querySelectorAll(".originalLink-Azwuo9");
-var i = 0;
-var downloadInt = setInterval(() => {
-    downloadImage(ls[i].href);
-    i++;
-    if (i == ls.length) clearInterval(downloadInt);
-}, 500);
+let next, ls, i, myPromise;
+next = document.querySelectorAll(".endButton-pLBGXH");
+goThrough = () => {
+    myPromise = new Promise(function (myResolve) {
+        i = 0;
+        next = document.querySelectorAll(".endButton-pLBGXH");
+        ls = document.querySelectorAll(".originalLink-Azwuo9");
+        var downloadInt = setInterval(() => {
+            downloadImage(ls[i].href);
+            i++;
+            if (i == ls.length) {
+                clearInterval(downloadInt);
+                myResolve();
+            }
+        }, 500);
+    });
+    myPromise.then(function () {
+        if (next[1].disabled) {
+            clearInterval(nextInt);
+        } else {
+            next[1].click();
+            setTimeout(() => {
+                goThrough();
+            }, 2000);
+        }
+    });
+};
+goThrough();
